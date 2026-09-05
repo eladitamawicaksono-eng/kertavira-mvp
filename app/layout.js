@@ -1,5 +1,6 @@
 import './globals.css';
 import RegisterSW from '../components/RegisterSW';
+import AppChrome from '../components/AppChrome';
 
 export const metadata = {
   title: 'Kertavira',
@@ -20,6 +21,7 @@ export default function RootLayout({ children }) {
     <html lang="id">
       <body>
         {children}
+        <AppChrome />
         <RegisterSW />
       </body>
     </html>

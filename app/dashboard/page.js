@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { supabase } from '../../lib/supabaseClient';
 import { ensureDefaultCategories } from '../../lib/seedCategories';
 import TransactionForm from '../../components/TransactionForm';
@@ -32,7 +33,10 @@ export default function DashboardPage() {
       .select('business_name')
       .eq('id', merchantId)
       .single();
-    if (data?.business_name) setBusinessName(data.business_name);
+    // Sembunyikan kalau nama usaha masih default berupa email (akun lama)
+    if (data?.business_name && !data.business_name.includes('@')) {
+      setBusinessName(data.business_name);
+    }
   }, []);
 
   const loadCategories = useCallback(async (merchantId) => {
@@ -72,11 +76,6 @@ export default function DashboardPage() {
     { masuk: 0, keluar: 0 }
   );
 
-  async function handleLogout() {
-    await supabase.auth.signOut();
-    router.push('/login');
-  }
-
   function handleCategoryAdded(newCategory) {
     setCategories((prev) => [...prev, newCategory]);
   }
@@ -90,9 +89,9 @@ export default function DashboardPage() {
           <h1>Kertavira</h1>
           {businessName && <span className="greeting">{businessName}</span>}
         </div>
-        <button className="ghost" onClick={handleLogout}>
-          Keluar
-        </button>
+        <Link href="/settings" className="ghost">
+          Pengaturan
+        </Link>
       </header>
 
       <SummaryCard masuk={totals.masuk} keluar={totals.keluar} />
@@ -114,7 +113,21 @@ export default function DashboardPage() {
         </button>
       </div>
 
-      {loading ? <p>Memuat...</p> : <TransactionList transactions={transactions} />}
+      {loading ? (
+        <p>Memuat...</p>
+      ) : (
+        <TransactionList
+          transactions={transactions.slice(0, 5)}
+          categories={categories}
+          onChanged={loadTransactions}
+        />
+      )}
+
+      {transactions.length > 5 && (
+        <Link href="/riwayat" className="link-btn" style={{ marginTop: 12 }}>
+          Lihat semua riwayat →
+        </Link>
+      )}
     </div>
   );
 }
