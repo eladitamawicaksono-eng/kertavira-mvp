@@ -1,0 +1,370 @@
+:root {
+  --indigo: #4338ca;
+  --violet: #6d28d9;
+  --amber: #f59e0b;
+  --ink: #1e1b4b;
+  --grey: #6b7280;
+  --lav: #f6f5fb;
+  --line: #e7e5f5;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Manrope', 'Segoe UI', Arial, sans-serif;
+  background: var(--lav);
+  color: var(--ink);
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
+
+input {
+  font-family: inherit;
+}
+
+/* --- Auth --- */
+.auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-card {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.auth-card h1 {
+  margin: 0 0 4px;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.auth-card p {
+  color: var(--grey);
+  font-size: 14px;
+  margin: 0 0 24px;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-card label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-card input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-size: 15px;
+}
+
+.auth-card button[type='submit'] {
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--indigo);
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.success { color: #047857; font-size: 14px; }
+.error { color: #dc2626; font-size: 14px; margin: 0; }
+
+/* --- Dashboard --- */
+.dashboard {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 28px 20px 60px;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--indigo);
+  font-weight: 700;
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+/* --- Summary --- */
+.summary {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.summary-item {
+  flex: 1;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.summary-item span {
+  font-size: 12px;
+  color: var(--grey);
+}
+
+.summary-item strong {
+  font-size: 16px;
+}
+
+.summary-item strong.in { color: #059669; }
+.summary-item strong.out { color: #dc2626; }
+
+/* --- Form --- */
+.tx-form {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.toggle button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--lav);
+  color: var(--grey);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.toggle button.active.in { background: #d1fae5; color: #047857; }
+.toggle button.active.out { background: #fee2e2; color: #dc2626; }
+
+.tx-form input[type='number'],
+.tx-form input[type='text'] {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-size: 15px;
+}
+
+.tx-form button[type='submit'] {
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--amber);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 15px;
+}
+
+/* --- Category select --- */
+.category-select {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-size: 14px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.category-add {
+  display: flex;
+  gap: 6px;
+}
+
+.category-add input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.category-add button[type='submit'] {
+  padding: 0 14px;
+  border-radius: 10px;
+  background: var(--indigo);
+  color: #fff;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* --- Breakdown --- */
+.breakdown {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 24px;
+}
+
+.breakdown h2 {
+  font-size: 15px;
+  margin: 0 0 14px;
+}
+
+.breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.breakdown-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.breakdown-track {
+  height: 8px;
+  background: var(--lav);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.breakdown-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--indigo), var(--violet));
+  border-radius: 6px;
+}
+
+/* --- Weekly trend --- */
+.trend {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 18px;
+  margin-bottom: 24px;
+}
+
+.trend h2 {
+  font-size: 15px;
+  margin: 0 0 14px;
+}
+
+.trend-chart {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 80px;
+}
+
+.trend-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+}
+
+.trend-bar-wrap {
+  height: 60px;
+  display: flex;
+  align-items: flex-end;
+}
+
+.trend-bar {
+  width: 18px;
+  border-radius: 4px 4px 0 0;
+}
+
+.trend-bar.pos { background: #059669; }
+.trend-bar.neg { background: #dc2626; }
+
+.trend-day {
+  font-size: 11px;
+  color: var(--grey);
+}
+
+/* --- List --- */
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.list-header h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.empty {
+  color: var(--grey);
+  font-size: 14px;
+  text-align: center;
+  padding: 24px 0;
+}
+
+.tx-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tx-list li {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tx-list li div {
+  display: flex;
+  flex-direction: column;
+}
+
+.tx-list li strong {
+  font-size: 14px;
+}
+
+.tx-list li span {
+  font-size: 12px;
+  color: var(--grey);
+}
+
+.tx-list li.masuk .amount { color: #059669; font-weight: 700; }
+.tx-list li.keluar .amount { color: #dc2626; font-weight: 700; }
