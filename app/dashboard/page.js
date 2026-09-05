@@ -14,6 +14,7 @@ import { exportToCsv } from '../../lib/exportCsv';
 export default function DashboardPage() {
   const router = useRouter();
   const [session, setSession] = useState(null);
+  const [businessName, setBusinessName] = useState('');
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,6 +25,15 @@ export default function DashboardPage() {
       else setSession(data.session);
     });
   }, [router]);
+
+  const loadMerchant = useCallback(async (merchantId) => {
+    const { data } = await supabase
+      .from('merchants')
+      .select('business_name')
+      .eq('id', merchantId)
+      .single();
+    if (data?.business_name) setBusinessName(data.business_name);
+  }, []);
 
   const loadCategories = useCallback(async (merchantId) => {
     const { data } = await supabase
@@ -48,9 +58,10 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!session) return;
+    loadMerchant(session.user.id);
     ensureDefaultCategories(session.user.id).then(() => loadCategories(session.user.id));
     loadTransactions();
-  }, [session, loadCategories, loadTransactions]);
+  }, [session, loadMerchant, loadCategories, loadTransactions]);
 
   const totals = transactions.reduce(
     (acc, t) => {
@@ -75,7 +86,10 @@ export default function DashboardPage() {
   return (
     <div className="dashboard">
       <header className="dashboard-header">
-        <h1>Kertavira</h1>
+        <div className="header-title">
+          <h1>Kertavira</h1>
+          {businessName && <span className="greeting">{businessName}</span>}
+        </div>
         <button className="ghost" onClick={handleLogout}>
           Keluar
         </button>

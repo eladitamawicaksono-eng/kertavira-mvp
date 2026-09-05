@@ -5,26 +5,41 @@
   --ink: #1e1b4b;
   --grey: #6b7280;
   --lav: #f6f5fb;
-  --line: #e7e5f5;
+  --line: #ece9f7;
+  --shadow-sm: 0 1px 2px rgba(30, 27, 75, 0.04), 0 1px 3px rgba(30, 27, 75, 0.06);
+  --shadow-md: 0 4px 10px rgba(30, 27, 75, 0.06), 0 2px 4px rgba(30, 27, 75, 0.05);
 }
 
 * { box-sizing: border-box; }
+
+html, body {
+  overscroll-behavior-y: none;
+}
 
 body {
   margin: 0;
   font-family: 'Manrope', 'Segoe UI', Arial, sans-serif;
   background: var(--lav);
   color: var(--ink);
+  -webkit-tap-highlight-color: transparent;
 }
 
 button {
   font-family: inherit;
   cursor: pointer;
   border: none;
+  transition: transform 0.08s ease, opacity 0.15s ease, background 0.15s ease;
 }
+button:active { transform: scale(0.97); }
 
 input {
   font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+input:focus {
+  outline: none;
+  border-color: var(--indigo) !important;
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.12);
 }
 
 /* --- Auth --- */
@@ -38,8 +53,8 @@ input {
 
 .auth-card {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 20px;
+  border-radius: 24px;
+  box-shadow: var(--shadow-md);
   padding: 40px 32px;
   width: 100%;
   max-width: 380px;
@@ -49,6 +64,7 @@ input {
   margin: 0 0 4px;
   font-size: 26px;
   font-weight: 800;
+  letter-spacing: -0.5px;
 }
 
 .auth-card p {
@@ -60,61 +76,69 @@ input {
 .auth-card form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
 }
 
 .auth-card label {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  margin-top: 10px;
+  color: var(--ink);
 }
 
 .auth-card input {
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
   font-size: 15px;
+  background: var(--lav);
 }
 
 .auth-card button[type='submit'] {
-  margin-top: 8px;
-  padding: 12px;
-  border-radius: 10px;
+  margin-top: 18px;
+  padding: 14px;
+  border-radius: 12px;
   background: var(--indigo);
   color: #fff;
   font-weight: 700;
   font-size: 15px;
+  box-shadow: 0 4px 12px rgba(67, 56, 202, 0.25);
 }
 
-.success { color: #047857; font-size: 14px; }
-.error { color: #dc2626; font-size: 14px; margin: 0; }
+.success { color: #047857; font-size: 13px; margin: 4px 0 0; }
+.error { color: #dc2626; font-size: 13px; margin: 4px 0 0; }
 
 .auth-tabs {
   display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 4px;
+  background: var(--lav);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 8px;
 }
 
 .auth-tabs button {
   flex: 1;
-  padding: 10px;
-  border-radius: 10px;
-  background: var(--lav);
+  padding: 9px;
+  border-radius: 9px;
+  background: transparent;
   color: var(--grey);
   font-weight: 700;
   font-size: 13px;
 }
 
 .auth-tabs button.active {
-  background: var(--indigo);
-  color: #fff;
+  background: #fff;
+  color: var(--indigo);
+  box-shadow: var(--shadow-sm);
 }
 
 .link-btn {
   background: transparent;
   color: var(--indigo);
   font-size: 13px;
-  font-weight: 600;
-  margin-top: 14px;
+  font-weight: 700;
+  margin-top: 16px;
   display: block;
   text-align: center;
   width: 100%;
@@ -124,55 +148,91 @@ input {
 .dashboard {
   max-width: 480px;
   margin: 0 auto;
-  padding: 28px 20px 60px;
+  padding: 0 16px 48px;
 }
 
 .dashboard-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--lav);
+  padding: 18px 0 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
 }
 
-.dashboard-header h1 {
-  font-size: 22px;
+.header-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.header-title h1 {
+  font-size: 20px;
   font-weight: 800;
   margin: 0;
+  letter-spacing: -0.3px;
+}
+
+.header-title .greeting {
+  font-size: 12.5px;
+  color: var(--grey);
+  font-weight: 500;
+  margin-top: 1px;
 }
 
 .ghost {
-  background: transparent;
+  background: #fff;
   color: var(--indigo);
   font-weight: 700;
-  font-size: 13px;
-  padding: 6px 10px;
+  font-size: 12.5px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  box-shadow: var(--shadow-sm);
 }
 
 /* --- Summary --- */
 .summary {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .summary-item {
   flex: 1;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  padding: 14px;
+  border-radius: 16px;
+  padding: 14px 12px;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
+.summary-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.summary-icon.in { background: #d1fae5; color: #059669; }
+.summary-icon.out { background: #fee2e2; color: #dc2626; }
+.summary-icon.balance { background: #e0e7ff; color: var(--indigo); font-size: 10px; }
+
 .summary-item span {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--grey);
+  font-weight: 600;
 }
 
 .summary-item strong {
-  font-size: 16px;
+  font-size: 15px;
+  letter-spacing: -0.2px;
 }
 
 .summary-item strong.in { color: #059669; }
@@ -181,57 +241,44 @@ input {
 /* --- Form --- */
 .tx-form {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 18px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .toggle {
   display: flex;
-  gap: 8px;
+  gap: 4px;
+  background: var(--lav);
+  padding: 4px;
+  border-radius: 12px;
 }
 
 .toggle button {
   flex: 1;
   padding: 10px;
-  border-radius: 10px;
-  background: var(--lav);
+  border-radius: 9px;
+  background: transparent;
   color: var(--grey);
   font-weight: 700;
   font-size: 13px;
 }
 
-.toggle button.active.in { background: #d1fae5; color: #047857; }
-.toggle button.active.out { background: #fee2e2; color: #dc2626; }
+.toggle button.active.in { background: #fff; color: #059669; box-shadow: var(--shadow-sm); }
+.toggle button.active.out { background: #fff; color: #dc2626; box-shadow: var(--shadow-sm); }
 
+.category-select,
 .tx-form input[type='number'],
 .tx-form input[type='text'] {
   padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
   font-size: 15px;
-}
-
-.tx-form button[type='submit'] {
-  padding: 12px;
-  border-radius: 10px;
-  background: var(--amber);
-  color: var(--ink);
-  font-weight: 800;
-  font-size: 15px;
-}
-
-/* --- Category select --- */
-.category-select {
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
-  font-size: 14px;
-  background: #fff;
+  background: var(--lav);
   color: var(--ink);
 }
 
@@ -242,32 +289,45 @@ input {
 
 .category-add input {
   flex: 1;
-  padding: 10px 12px;
-  border-radius: 10px;
-  border: 1px solid var(--line);
+  padding: 11px 12px;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
   font-size: 14px;
+  background: var(--lav);
 }
 
 .category-add button[type='submit'] {
-  padding: 0 14px;
-  border-radius: 10px;
+  padding: 0 16px;
+  border-radius: 12px;
   background: var(--indigo);
   color: #fff;
   font-weight: 700;
   font-size: 13px;
 }
 
+.tx-form button[type='submit'] {
+  padding: 13px;
+  border-radius: 12px;
+  background: var(--amber);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+  margin-top: 2px;
+}
+
 /* --- Breakdown --- */
 .breakdown {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
   padding: 18px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .breakdown h2 {
-  font-size: 15px;
+  font-size: 14.5px;
+  font-weight: 800;
   margin: 0 0 14px;
 }
 
@@ -281,11 +341,12 @@ input {
   display: flex;
   justify-content: space-between;
   font-size: 13px;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
+  font-weight: 600;
 }
 
 .breakdown-track {
-  height: 8px;
+  height: 7px;
   background: var(--lav);
   border-radius: 6px;
   overflow: hidden;
@@ -300,15 +361,16 @@ input {
 /* --- Weekly trend --- */
 .trend {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
   padding: 18px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .trend h2 {
-  font-size: 15px;
-  margin: 0 0 14px;
+  font-size: 14.5px;
+  font-weight: 800;
+  margin: 0 0 16px;
 }
 
 .trend-chart {
@@ -333,16 +395,17 @@ input {
 }
 
 .trend-bar {
-  width: 18px;
-  border-radius: 4px 4px 0 0;
+  width: 16px;
+  border-radius: 5px 5px 2px 2px;
 }
 
-.trend-bar.pos { background: #059669; }
-.trend-bar.neg { background: #dc2626; }
+.trend-bar.pos { background: linear-gradient(180deg, #34d399, #059669); }
+.trend-bar.neg { background: linear-gradient(180deg, #f87171, #dc2626); }
 
 .trend-day {
   font-size: 11px;
   color: var(--grey);
+  font-weight: 600;
 }
 
 /* --- List --- */
@@ -351,18 +414,23 @@ input {
   align-items: center;
   justify-content: space-between;
   margin-bottom: 10px;
+  padding: 0 2px;
 }
 
 .list-header h2 {
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 800;
   margin: 0;
 }
 
 .empty {
   color: var(--grey);
-  font-size: 14px;
+  font-size: 13.5px;
   text-align: center;
-  padding: 24px 0;
+  padding: 32px 20px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
 }
 
 .tx-list {
@@ -376,9 +444,9 @@ input {
 
 .tx-list li {
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 12px 14px;
+  border-radius: 14px;
+  padding: 13px 14px;
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -387,16 +455,18 @@ input {
 .tx-list li div {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .tx-list li strong {
-  font-size: 14px;
+  font-size: 13.5px;
+  font-weight: 700;
 }
 
 .tx-list li span {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--grey);
 }
 
-.tx-list li.masuk .amount { color: #059669; font-weight: 700; }
-.tx-list li.keluar .amount { color: #dc2626; font-weight: 700; }
+.tx-list li.masuk .amount { color: #059669; font-weight: 800; font-size: 14px; }
+.tx-list li.keluar .amount { color: #dc2626; font-weight: 800; font-size: 14px; }
