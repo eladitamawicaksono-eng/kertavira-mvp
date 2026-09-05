@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "app.vercel.kertavira_mvp.twa",
+        "sha256_cert_fingerprints": ["D5:52:D9:4E:5E:37:8A:95:FB:CD:A1:3C:AC:44:8D:EA:82:9E:AC:C0:A9:61:62:FA:D0:11:43:0C:DD:99:87:67"]
+      }
+    }]
