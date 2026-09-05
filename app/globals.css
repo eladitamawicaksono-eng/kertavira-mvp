@@ -88,6 +88,27 @@ input {
 .success { color: #047857; font-size: 14px; }
 .error { color: #dc2626; font-size: 14px; margin: 0; }
 
+.auth-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.auth-tabs button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--lav);
+  color: var(--grey);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.auth-tabs button.active {
+  background: var(--indigo);
+  color: #fff;
+}
+
 /* --- Dashboard --- */
 .dashboard {
   max-width: 480px;
