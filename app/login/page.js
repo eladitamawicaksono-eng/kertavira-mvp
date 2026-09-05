@@ -3,9 +3,11 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
+import { useLanguage } from '../../components/LanguageProvider';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { t, lang, setLang } = useLanguage();
   const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'forgot'
   const [businessName, setBusinessName] = useState('');
   const [email, setEmail] = useState('');
@@ -37,17 +39,17 @@ export default function LoginPage() {
 
     if (mode === 'signup') {
       if (!businessName.trim()) {
-        setError('Nama usaha wajib diisi.');
+        setError(t('businessNameRequired'));
         setLoading(false);
         return;
       }
       if (password.length < 6) {
-        setError('Password minimal 6 karakter.');
+        setError(t('passwordMinLength'));
         setLoading(false);
         return;
       }
       if (password !== confirmPassword) {
-        setError('Konfirmasi password tidak sama dengan password di atas.');
+        setError(t('passwordMismatch'));
         setLoading(false);
         return;
       }
@@ -70,7 +72,7 @@ export default function LoginPage() {
       if (data.session) {
         router.push('/dashboard');
       } else {
-        setInfo('Akun berhasil dibuat. Silakan masuk dengan email & password tadi.');
+        setInfo(t('signupSuccess'));
         switchMode('login');
       }
       return;
@@ -81,7 +83,7 @@ export default function LoginPage() {
       const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
       setLoading(false);
       if (error) setError(error.message);
-      else setInfo(`Link reset password sudah dikirim ke ${email}. Cek email kamu (dan folder Spam).`);
+      else setInfo(`${t('sendResetLink')} → ${email}`);
       return;
     }
   }
@@ -89,8 +91,27 @@ export default function LoginPage() {
   return (
     <div className="auth-wrap">
       <div className="auth-card">
-        <h1>Kertavira</h1>
-        <p>Catat kas harian usahamu, tanpa ribet.</p>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 6, marginBottom: 8 }}>
+          <button
+            type="button"
+            className="lang-pill"
+            data-active={lang === 'id'}
+            onClick={() => setLang('id')}
+          >
+            ID
+          </button>
+          <button
+            type="button"
+            className="lang-pill"
+            data-active={lang === 'en'}
+            onClick={() => setLang('en')}
+          >
+            EN
+          </button>
+        </div>
+
+        <h1>{t('appName')}</h1>
+        <p>{t('tagline')}</p>
 
         {mode !== 'forgot' && (
           <div className="auth-tabs">
@@ -99,14 +120,14 @@ export default function LoginPage() {
               className={mode === 'login' ? 'active' : ''}
               onClick={() => switchMode('login')}
             >
-              Masuk
+              {t('login')}
             </button>
             <button
               type="button"
               className={mode === 'signup' ? 'active' : ''}
               onClick={() => switchMode('signup')}
             >
-              Daftar
+              {t('signup')}
             </button>
           </div>
         )}
@@ -114,31 +135,31 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit}>
           {mode === 'signup' && (
             <>
-              <label htmlFor="businessName">Nama Usaha</label>
+              <label htmlFor="businessName">{t('businessName')}</label>
               <input
                 id="businessName"
                 type="text"
                 required
                 value={businessName}
                 onChange={(e) => setBusinessName(e.target.value)}
-                placeholder="Contoh: Warung Berkah Jaya"
+                placeholder={t('businessNamePlaceholder')}
               />
             </>
           )}
 
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">{t('email')}</label>
           <input
             id="email"
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="nama@usaha.com"
+            placeholder={t('emailPlaceholder')}
           />
 
           {mode !== 'forgot' && (
             <>
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{t('password')}</label>
               <input
                 id="password"
                 type="password"
@@ -146,14 +167,14 @@ export default function LoginPage() {
                 minLength={6}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Minimal 6 karakter"
+                placeholder={t('passwordPlaceholder')}
               />
             </>
           )}
 
           {mode === 'signup' && (
             <>
-              <label htmlFor="confirmPassword">Ulangi Password</label>
+              <label htmlFor="confirmPassword">{t('confirmPassword')}</label>
               <input
                 id="confirmPassword"
                 type="password"
@@ -161,19 +182,19 @@ export default function LoginPage() {
                 minLength={6}
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Ketik ulang password di atas"
+                placeholder={t('confirmPasswordPlaceholder')}
               />
             </>
           )}
 
           <button type="submit" disabled={loading}>
             {loading
-              ? 'Memproses...'
+              ? t('processing')
               : mode === 'login'
-              ? 'Masuk'
+              ? t('login')
               : mode === 'signup'
-              ? 'Daftar'
-              : 'Kirim link reset'}
+              ? t('signup')
+              : t('sendResetLink')}
           </button>
 
           {error && <p className="error">{error}</p>}
@@ -182,12 +203,12 @@ export default function LoginPage() {
 
         {mode === 'login' && (
           <button type="button" className="link-btn" onClick={() => switchMode('forgot')}>
-            Lupa password?
+            {t('forgotPassword')}
           </button>
         )}
         {mode === 'forgot' && (
           <button type="button" className="link-btn" onClick={() => switchMode('login')}>
-            Kembali ke halaman masuk
+            {t('backToLogin')}
           </button>
         )}
       </div>

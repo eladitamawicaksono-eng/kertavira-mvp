@@ -596,3 +596,30 @@ input:focus {
   background: var(--lav);
   color: var(--ink);
 }
+
+/* --- Date grouping (Riwayat) --- */
+.date-group {
+  margin-bottom: 18px;
+}
+
+.date-header {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--grey);
+  margin: 4px 2px 8px;
+}
+
+/* --- Language pill (login) --- */
+.lang-pill {
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: var(--lav);
+  color: var(--grey);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.lang-pill[data-active='true'] {
+  background: var(--indigo);
+  color: #fff;
+}

@@ -1,12 +1,17 @@
+'use client';
+
+import { useLanguage } from './LanguageProvider';
+
 export default function CategoryBreakdown({ transactions, categories }) {
+  const { t } = useLanguage();
   const categoryMap = Object.fromEntries(categories.map((c) => [c.id, c.name]));
 
   const totals = {};
   transactions
-    .filter((t) => t.type === 'keluar')
-    .forEach((t) => {
-      const label = categoryMap[t.category_id] || 'Tanpa kategori';
-      totals[label] = (totals[label] || 0) + Number(t.amount);
+    .filter((tx) => tx.type === 'keluar')
+    .forEach((tx) => {
+      const label = categoryMap[tx.category_id] || t('noCategory');
+      totals[label] = (totals[label] || 0) + Number(tx.amount);
     });
 
   const entries = Object.entries(totals).sort((a, b) => b[1] - a[1]);
@@ -16,7 +21,7 @@ export default function CategoryBreakdown({ transactions, categories }) {
 
   return (
     <div className="breakdown">
-      <h2>Pengeluaran per kategori</h2>
+      <h2>{t('expenseByCategory')}</h2>
       <div className="breakdown-list">
         {entries.map(([label, value]) => (
           <div className="breakdown-row" key={label}>

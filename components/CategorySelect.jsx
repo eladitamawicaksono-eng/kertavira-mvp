@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { useLanguage } from './LanguageProvider';
 
 export default function CategorySelect({
   categories,
@@ -11,6 +12,7 @@ export default function CategorySelect({
   onChange,
   onCategoryAdded,
 }) {
+  const { t } = useLanguage();
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState('');
 
@@ -40,13 +42,13 @@ export default function CategorySelect({
         <input
           autoFocus
           type="text"
-          placeholder="Nama kategori baru"
+          placeholder={t('newCategoryName')}
           value={newName}
           onChange={(e) => setNewName(e.target.value)}
         />
-        <button type="submit">Tambah</button>
+        <button type="submit">{t('add')}</button>
         <button type="button" className="ghost" onClick={() => setAdding(false)}>
-          Batal
+          {t('cancel')}
         </button>
       </form>
     );
@@ -61,13 +63,13 @@ export default function CategorySelect({
         else onChange(e.target.value);
       }}
     >
-      <option value="">Tanpa kategori</option>
+      <option value="">{t('noCategory')}</option>
       {filtered.map((c) => (
         <option key={c.id} value={c.id}>
           {c.name}
         </option>
       ))}
-      <option value="__add__">+ Tambah kategori baru</option>
+      <option value="__add__">{t('addNewCategory')}</option>
     </select>
   );
 }

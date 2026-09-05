@@ -3,8 +3,10 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../lib/supabaseClient';
+import { exportTransactionsAsImage } from '../../lib/exportImage';
+import { formatMonthLabel, formatDateHeader } from '../../lib/i18n';
+import { useLanguage } from '../../components/LanguageProvider';
 import TransactionList from '../../components/TransactionList';
-import { exportToCsv } from '../../lib/exportCsv';
 
 function currentMonthValue() {
   const d = new Date();
@@ -15,7 +17,9 @@ const PAGE_SIZE = 30;
 
 export default function RiwayatPage() {
   const router = useRouter();
+  const { t, lang } = useLanguage();
   const [session, setSession] = useState(null);
+  const [businessName, setBusinessName] = useState('');
   const [month, setMonth] = useState(currentMonthValue());
   const [transactions, setTransactions] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -29,6 +33,17 @@ export default function RiwayatPage() {
       else setSession(data.session);
     });
   }, [router]);
+
+  const loadMerchant = useCallback(async (merchantId) => {
+    const { data } = await supabase
+      .from('merchants')
+      .select('business_name')
+      .eq('id', merchantId)
+      .single();
+    if (data?.business_name && !data.business_name.includes('@')) {
+      setBusinessName(data.business_name);
+    }
+  }, []);
 
   const loadCategories = useCallback(async (merchantId) => {
     const { data } = await supabase.from('categories').select('*').eq('merchant_id', merchantId);
@@ -65,10 +80,12 @@ export default function RiwayatPage() {
 
   useEffect(() => {
     if (!session) return;
+    loadMerchant(session.user.id);
     loadCategories(session.user.id);
-  }, [session, loadCategories]);
+  }, [session, loadMerchant, loadCategories]);
 
   useEffect(() => {
+    if (!session) return;
     setPage(0);
     loadTransactions(0);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -85,31 +102,59 @@ export default function RiwayatPage() {
     loadTransactions(0);
   }
 
+  function handleExport() {
+    exportTransactionsAsImage({
+      businessName,
+      periodLabel: formatMonthLabel(month, lang),
+      transactions,
+      lang,
+      t,
+    });
+  }
+
+  // Kelompokkan transaksi per tanggal biar rapi
+  const groups = [];
+  transactions.forEach((tx) => {
+    const last = groups[groups.length - 1];
+    if (last && last.date === tx.transaction_date) {
+      last.items.push(tx);
+    } else {
+      groups.push({ date: tx.transaction_date, items: [tx] });
+    }
+  });
+
   if (!session) return null;
 
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="header-title">
-          <h1>Riwayat</h1>
-          <span className="greeting">Semua transaksi per bulan</span>
+          <h1>{t('historyTitle')}</h1>
+          <span className="greeting">{t('historySubtitle')}</span>
         </div>
       </header>
 
       <div className="tx-form">
-        <label style={{ fontSize: 13, fontWeight: 700 }}>Pilih bulan</label>
+        <label style={{ fontSize: 13, fontWeight: 700 }}>{t('selectMonth')}</label>
         <input type="month" value={month} onChange={(e) => setMonth(e.target.value)} />
         <button
           type="button"
           className="ghost"
-          style={{ width: '100%', textAlign: 'center' }}
-          onClick={() => exportToCsv(transactions)}
+          style={{ width: '100%', textAlign: 'center', padding: 12 }}
+          onClick={handleExport}
         >
-          Ekspor bulan ini ke CSV
+          {t('exportImage')}
         </button>
       </div>
 
-      <TransactionList transactions={transactions} categories={categories} onChanged={refreshAfterChange} />
+      {groups.length === 0 && !loading && <p className="empty">{t('noTransactionsYet')}</p>}
+
+      {groups.map((group) => (
+        <div key={group.date} className="date-group">
+          <div className="date-header">{formatDateHeader(group.date, lang)}</div>
+          <TransactionList transactions={group.items} categories={categories} onChanged={refreshAfterChange} />
+        </div>
+      ))}
 
       {hasMore && !loading && (
         <button
@@ -118,10 +163,10 @@ export default function RiwayatPage() {
           style={{ width: '100%', textAlign: 'center', marginTop: 12, padding: 12 }}
           onClick={loadMore}
         >
-          Muat lebih banyak
+          {t('loadMore')}
         </button>
       )}
-      {loading && <p style={{ textAlign: 'center', color: 'var(--grey)', marginTop: 12 }}>Memuat...</p>}
+      {loading && <p style={{ textAlign: 'center', color: 'var(--grey)', marginTop: 12 }}>{t('loading')}</p>}
     </div>
   );
 }

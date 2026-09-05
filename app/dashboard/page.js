@@ -5,15 +5,17 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../lib/supabaseClient';
 import { ensureDefaultCategories } from '../../lib/seedCategories';
+import { exportTransactionsAsImage } from '../../lib/exportImage';
+import { useLanguage } from '../../components/LanguageProvider';
 import TransactionForm from '../../components/TransactionForm';
 import TransactionList from '../../components/TransactionList';
 import SummaryCard from '../../components/SummaryCard';
 import CategoryBreakdown from '../../components/CategoryBreakdown';
 import WeeklyTrend from '../../components/WeeklyTrend';
-import { exportToCsv } from '../../lib/exportCsv';
 
 export default function DashboardPage() {
   const router = useRouter();
+  const { t, lang } = useLanguage();
   const [session, setSession] = useState(null);
   const [businessName, setBusinessName] = useState('');
   const [transactions, setTransactions] = useState([]);
@@ -33,7 +35,6 @@ export default function DashboardPage() {
       .select('business_name')
       .eq('id', merchantId)
       .single();
-    // Sembunyikan kalau nama usaha masih default berupa email (akun lama)
     if (data?.business_name && !data.business_name.includes('@')) {
       setBusinessName(data.business_name);
     }
@@ -68,9 +69,9 @@ export default function DashboardPage() {
   }, [session, loadMerchant, loadCategories, loadTransactions]);
 
   const totals = transactions.reduce(
-    (acc, t) => {
-      if (t.type === 'masuk') acc.masuk += Number(t.amount);
-      else acc.keluar += Number(t.amount);
+    (acc, tx) => {
+      if (tx.type === 'masuk') acc.masuk += Number(tx.amount);
+      else acc.keluar += Number(tx.amount);
       return acc;
     },
     { masuk: 0, keluar: 0 }
@@ -80,17 +81,27 @@ export default function DashboardPage() {
     setCategories((prev) => [...prev, newCategory]);
   }
 
+  function handleExport() {
+    exportTransactionsAsImage({
+      businessName,
+      periodLabel: t('reportPeriodRecent'),
+      transactions,
+      lang,
+      t,
+    });
+  }
+
   if (!session) return null;
 
   return (
     <div className="dashboard">
       <header className="dashboard-header">
         <div className="header-title">
-          <h1>Kertavira</h1>
+          <h1>{t('appName')}</h1>
           {businessName && <span className="greeting">{businessName}</span>}
         </div>
         <Link href="/settings" className="ghost">
-          Pengaturan
+          {t('navSettings')}
         </Link>
       </header>
 
@@ -107,14 +118,14 @@ export default function DashboardPage() {
       <CategoryBreakdown transactions={transactions} categories={categories} />
 
       <div className="list-header">
-        <h2>Transaksi terbaru</h2>
-        <button className="ghost" onClick={() => exportToCsv(transactions)}>
-          Ekspor CSV
+        <h2>{t('recentTransactions')}</h2>
+        <button className="ghost" onClick={handleExport}>
+          {t('exportImage')}
         </button>
       </div>
 
       {loading ? (
-        <p>Memuat...</p>
+        <p>{t('loading')}</p>
       ) : (
         <TransactionList
           transactions={transactions.slice(0, 5)}
@@ -125,7 +136,7 @@ export default function DashboardPage() {
 
       {transactions.length > 5 && (
         <Link href="/riwayat" className="link-btn" style={{ marginTop: 12 }}>
-          Lihat semua riwayat →
+          {t('viewAllHistory')}
         </Link>
       )}
     </div>

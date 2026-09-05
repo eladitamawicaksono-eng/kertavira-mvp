@@ -2,12 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-
-const items = [
-  { href: '/dashboard', label: 'Beranda', icon: 'home' },
-  { href: '/riwayat', label: 'Riwayat', icon: 'list' },
-  { href: '/settings', label: 'Pengaturan', icon: 'gear' },
-];
+import { useLanguage } from './LanguageProvider';
 
 function Icon({ name, active }) {
   const color = active ? 'var(--indigo)' : 'var(--grey)';
@@ -43,6 +38,13 @@ function Icon({ name, active }) {
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const items = [
+    { href: '/dashboard', label: t('navHome'), icon: 'home' },
+    { href: '/riwayat', label: t('navHistory'), icon: 'list' },
+    { href: '/settings', label: t('navSettings'), icon: 'gear' },
+  ];
 
   return (
     <nav className="bottom-nav">

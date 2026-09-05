@@ -1,6 +1,7 @@
 import './globals.css';
 import RegisterSW from '../components/RegisterSW';
 import AppChrome from '../components/AppChrome';
+import { LanguageProvider } from '../components/LanguageProvider';
 
 export const metadata = {
   title: 'Kertavira',
@@ -20,9 +21,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="id">
       <body>
-        {children}
-        <AppChrome />
-        <RegisterSW />
+        <LanguageProvider>
+          {children}
+          <AppChrome />
+          <RegisterSW />
+        </LanguageProvider>
       </body>
     </html>
   );

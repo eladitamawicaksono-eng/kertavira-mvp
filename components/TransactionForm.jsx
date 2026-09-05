@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { supabase } from '../lib/supabaseClient';
+import { useLanguage } from './LanguageProvider';
 import CategorySelect from './CategorySelect';
 
 export default function TransactionForm({ merchantId, categories, onSaved, onCategoryAdded }) {
+  const { t } = useLanguage();
   const [type, setType] = useState('masuk');
   const [categoryId, setCategoryId] = useState('');
   const [amount, setAmount] = useState('');
@@ -45,14 +47,14 @@ export default function TransactionForm({ merchantId, categories, onSaved, onCat
           className={type === 'masuk' ? 'active in' : 'in'}
           onClick={() => handleTypeChange('masuk')}
         >
-          Pemasukan
+          {t('income')}
         </button>
         <button
           type="button"
           className={type === 'keluar' ? 'active out' : 'out'}
           onClick={() => handleTypeChange('keluar')}
         >
-          Pengeluaran
+          {t('expense')}
         </button>
       </div>
 
@@ -68,20 +70,20 @@ export default function TransactionForm({ merchantId, categories, onSaved, onCat
       <input
         type="number"
         inputMode="numeric"
-        placeholder="Jumlah (Rp)"
+        placeholder={t('amount')}
         value={amount}
         onChange={(e) => setAmount(e.target.value)}
         required
       />
       <input
         type="text"
-        placeholder="Catatan (opsional)"
+        placeholder={t('note')}
         value={note}
         onChange={(e) => setNote(e.target.value)}
       />
 
       <button type="submit" disabled={saving}>
-        {saving ? 'Menyimpan...' : 'Simpan'}
+        {saving ? t('saving') : t('save')}
       </button>
     </form>
   );
