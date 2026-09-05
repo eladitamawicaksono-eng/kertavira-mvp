@@ -6,7 +6,7 @@ import { supabase } from '../../lib/supabaseClient';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [mode, setMode] = useState('login'); // 'login' | 'signup'
+  const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'forgot'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -24,7 +24,10 @@ export default function LoginPage() {
       setLoading(false);
       if (error) setError(error.message);
       else router.push('/dashboard');
-    } else {
+      return;
+    }
+
+    if (mode === 'signup') {
       const { error } = await supabase.auth.signUp({ email, password });
       setLoading(false);
       if (error) {
@@ -33,6 +36,16 @@ export default function LoginPage() {
         setInfo('Akun berhasil dibuat. Silakan masuk dengan email & password tadi.');
         setMode('login');
       }
+      return;
+    }
+
+    if (mode === 'forgot') {
+      const redirectTo = `${window.location.origin}/reset-password`;
+      const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+      setLoading(false);
+      if (error) setError(error.message);
+      else setInfo(`Link reset password sudah dikirim ke ${email}. Cek email kamu (dan folder Spam).`);
+      return;
     }
   }
 
@@ -42,22 +55,24 @@ export default function LoginPage() {
         <h1>Kertavira</h1>
         <p>Catat kas harian usahamu, tanpa ribet.</p>
 
-        <div className="auth-tabs">
-          <button
-            type="button"
-            className={mode === 'login' ? 'active' : ''}
-            onClick={() => setMode('login')}
-          >
-            Masuk
-          </button>
-          <button
-            type="button"
-            className={mode === 'signup' ? 'active' : ''}
-            onClick={() => setMode('signup')}
-          >
-            Daftar
-          </button>
-        </div>
+        {mode !== 'forgot' && (
+          <div className="auth-tabs">
+            <button
+              type="button"
+              className={mode === 'login' ? 'active' : ''}
+              onClick={() => { setMode('login'); setError(''); setInfo(''); }}
+            >
+              Masuk
+            </button>
+            <button
+              type="button"
+              className={mode === 'signup' ? 'active' : ''}
+              onClick={() => { setMode('signup'); setError(''); setInfo(''); }}
+            >
+              Daftar
+            </button>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <label htmlFor="email">Email</label>
@@ -70,24 +85,53 @@ export default function LoginPage() {
             placeholder="nama@usaha.com"
           />
 
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            required
-            minLength={6}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Minimal 6 karakter"
-          />
+          {mode !== 'forgot' && (
+            <>
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Minimal 6 karakter"
+              />
+            </>
+          )}
 
           <button type="submit" disabled={loading}>
-            {loading ? 'Memproses...' : mode === 'login' ? 'Masuk' : 'Daftar'}
+            {loading
+              ? 'Memproses...'
+              : mode === 'login'
+              ? 'Masuk'
+              : mode === 'signup'
+              ? 'Daftar'
+              : 'Kirim link reset'}
           </button>
 
           {error && <p className="error">{error}</p>}
           {info && <p className="success">{info}</p>}
         </form>
+
+        {mode === 'login' && (
+          <button
+            type="button"
+            className="link-btn"
+            onClick={() => { setMode('forgot'); setError(''); setInfo(''); }}
+          >
+            Lupa password?
+          </button>
+        )}
+        {mode === 'forgot' && (
+          <button
+            type="button"
+            className="link-btn"
+            onClick={() => { setMode('login'); setError(''); setInfo(''); }}
+          >
+            Kembali ke halaman masuk
+          </button>
+        )}
       </div>
     </div>
   );

@@ -109,6 +109,17 @@ input {
   color: #fff;
 }
 
+.link-btn {
+  background: transparent;
+  color: var(--indigo);
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 14px;
+  display: block;
+  text-align: center;
+  width: 100%;
+}
+
 /* --- Dashboard --- */
 .dashboard {
   max-width: 480px;
