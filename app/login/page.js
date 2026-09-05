@@ -7,11 +7,19 @@ import { supabase } from '../../lib/supabaseClient';
 export default function LoginPage() {
   const router = useRouter();
   const [mode, setMode] = useState('login'); // 'login' | 'signup' | 'forgot'
+  const [businessName, setBusinessName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
   const [loading, setLoading] = useState(false);
+
+  function switchMode(newMode) {
+    setMode(newMode);
+    setError('');
+    setInfo('');
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -28,13 +36,42 @@ export default function LoginPage() {
     }
 
     if (mode === 'signup') {
-      const { error } = await supabase.auth.signUp({ email, password });
-      setLoading(false);
+      if (!businessName.trim()) {
+        setError('Nama usaha wajib diisi.');
+        setLoading(false);
+        return;
+      }
+      if (password.length < 6) {
+        setError('Password minimal 6 karakter.');
+        setLoading(false);
+        return;
+      }
+      if (password !== confirmPassword) {
+        setError('Konfirmasi password tidak sama dengan password di atas.');
+        setLoading(false);
+        return;
+      }
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) {
         setError(error.message);
+        setLoading(false);
+        return;
+      }
+
+      if (data.user) {
+        await supabase
+          .from('merchants')
+          .update({ business_name: businessName.trim() })
+          .eq('id', data.user.id);
+      }
+
+      setLoading(false);
+      if (data.session) {
+        router.push('/dashboard');
       } else {
         setInfo('Akun berhasil dibuat. Silakan masuk dengan email & password tadi.');
-        setMode('login');
+        switchMode('login');
       }
       return;
     }
@@ -60,14 +97,14 @@ export default function LoginPage() {
             <button
               type="button"
               className={mode === 'login' ? 'active' : ''}
-              onClick={() => { setMode('login'); setError(''); setInfo(''); }}
+              onClick={() => switchMode('login')}
             >
               Masuk
             </button>
             <button
               type="button"
               className={mode === 'signup' ? 'active' : ''}
-              onClick={() => { setMode('signup'); setError(''); setInfo(''); }}
+              onClick={() => switchMode('signup')}
             >
               Daftar
             </button>
@@ -75,6 +112,20 @@ export default function LoginPage() {
         )}
 
         <form onSubmit={handleSubmit}>
+          {mode === 'signup' && (
+            <>
+              <label htmlFor="businessName">Nama Usaha</label>
+              <input
+                id="businessName"
+                type="text"
+                required
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
+                placeholder="Contoh: Warung Berkah Jaya"
+              />
+            </>
+          )}
+
           <label htmlFor="email">Email</label>
           <input
             id="email"
@@ -100,6 +151,21 @@ export default function LoginPage() {
             </>
           )}
 
+          {mode === 'signup' && (
+            <>
+              <label htmlFor="confirmPassword">Ulangi Password</label>
+              <input
+                id="confirmPassword"
+                type="password"
+                required
+                minLength={6}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Ketik ulang password di atas"
+              />
+            </>
+          )}
+
           <button type="submit" disabled={loading}>
             {loading
               ? 'Memproses...'
@@ -115,20 +181,12 @@ export default function LoginPage() {
         </form>
 
         {mode === 'login' && (
-          <button
-            type="button"
-            className="link-btn"
-            onClick={() => { setMode('forgot'); setError(''); setInfo(''); }}
-          >
+          <button type="button" className="link-btn" onClick={() => switchMode('forgot')}>
             Lupa password?
           </button>
         )}
         {mode === 'forgot' && (
-          <button
-            type="button"
-            className="link-btn"
-            onClick={() => { setMode('login'); setError(''); setInfo(''); }}
-          >
+          <button type="button" className="link-btn" onClick={() => switchMode('login')}>
             Kembali ke halaman masuk
           </button>
         )}
