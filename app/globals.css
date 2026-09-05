@@ -452,12 +452,6 @@ input:focus {
   justify-content: space-between;
 }
 
-.tx-list li div {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
 .tx-list li strong {
   font-size: 13.5px;
   font-weight: 700;
@@ -662,7 +656,8 @@ input:focus {
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
 }
 
-.form-actions button[type='submit'].save-success {
+.form-actions button[type='submit'].save-success,
+.tx-form button[type='submit'].save-success {
   background: #059669;
   color: #fff;
   font-size: 18px;
