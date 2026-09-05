@@ -10,6 +10,8 @@ import { useLanguage } from '../../components/LanguageProvider';
 import TransactionForm from '../../components/TransactionForm';
 import TransactionList from '../../components/TransactionList';
 import SummaryCard from '../../components/SummaryCard';
+import DonutChart from '../../components/DonutChart';
+import InsightBanner from '../../components/InsightBanner';
 import CategoryBreakdown from '../../components/CategoryBreakdown';
 import WeeklyTrend from '../../components/WeeklyTrend';
 
@@ -106,6 +108,10 @@ export default function DashboardPage() {
       </header>
 
       <SummaryCard masuk={totals.masuk} keluar={totals.keluar} />
+
+      <InsightBanner transactions={transactions} />
+
+      <DonutChart masuk={totals.masuk} keluar={totals.keluar} />
 
       <TransactionForm
         merchantId={session.user.id}

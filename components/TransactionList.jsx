@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useLanguage } from './LanguageProvider';
 
@@ -25,6 +25,65 @@ function TrashIcon() {
   );
 }
 
+function SwipeRow({ id, openId, setOpenId, onDelete, children }) {
+  const [dragX, setDragX] = useState(null);
+  const dragging = useRef(false);
+  const startX = useRef(0);
+  const isOpen = openId === id;
+
+  function getX(e) {
+    return e.touches ? e.touches[0].clientX : e.clientX;
+  }
+
+  function handleDown(e) {
+    dragging.current = true;
+    startX.current = getX(e);
+  }
+
+  function handleMove(e) {
+    if (!dragging.current) return;
+    const delta = getX(e) - startX.current;
+    const base = isOpen ? -84 : 0;
+    const next = Math.min(0, Math.max(-84, base + delta));
+    setDragX(next);
+  }
+
+  function handleUp() {
+    if (!dragging.current) return;
+    dragging.current = false;
+    const finalX = dragX === null ? (isOpen ? -84 : 0) : dragX;
+    if (finalX < -40) {
+      setOpenId(id);
+    } else {
+      setOpenId(null);
+    }
+    setDragX(null);
+  }
+
+  const translate = dragX !== null ? dragX : isOpen ? -84 : 0;
+
+  return (
+    <div className="swipe-row">
+      <div className="swipe-delete-bg" onClick={onDelete}>
+        <TrashIcon />
+      </div>
+      <div
+        className="swipe-content"
+        style={{ transform: `translateX(${translate}px)`, transition: dragX === null ? 'transform 0.2s ease' : 'none' }}
+        onMouseDown={handleDown}
+        onMouseMove={handleMove}
+        onMouseUp={handleUp}
+        onMouseLeave={handleUp}
+        onTouchStart={handleDown}
+        onTouchMove={handleMove}
+        onTouchEnd={handleUp}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
 export default function TransactionList({ transactions, categories, onChanged }) {
   const { t } = useLanguage();
   const [editingId, setEditingId] = useState(null);
@@ -32,6 +91,7 @@ export default function TransactionList({ transactions, categories, onChanged })
   const [editNote, setEditNote] = useState('');
   const [editType, setEditType] = useState('masuk');
   const [editCategoryId, setEditCategoryId] = useState('');
+  const [openSwipeId, setOpenSwipeId] = useState(null);
 
   function startEdit(tx) {
     setEditingId(tx.id);
@@ -60,8 +120,12 @@ export default function TransactionList({ transactions, categories, onChanged })
   }
 
   async function handleDelete(id) {
-    if (!window.confirm(t('confirmDelete'))) return;
+    if (!window.confirm(t('confirmDelete'))) {
+      setOpenSwipeId(null);
+      return;
+    }
     await supabase.from('transactions').delete().eq('id', id);
+    setOpenSwipeId(null);
     onChanged();
   }
 
@@ -132,29 +196,33 @@ export default function TransactionList({ transactions, categories, onChanged })
 
         return (
           <li key={tx.id} className={tx.type}>
-            <div>
-              <strong>{tx.note || (tx.type === 'masuk' ? t('income') : t('expense'))}</strong>
-              <span>{tx.transaction_date}</span>
-            </div>
-            <div className="tx-right">
-              <span className="amount">
-                {tx.type === 'masuk' ? '+' : '-'}Rp{Number(tx.amount).toLocaleString('id-ID')}
-              </span>
-              <div className="tx-actions">
-                <button type="button" className="icon-btn" onClick={() => startEdit(tx)} title={t('edit')} aria-label={t('edit')}>
-                  <EditIcon />
-                </button>
-                <button
-                  type="button"
-                  className="icon-btn danger"
-                  onClick={() => handleDelete(tx.id)}
-                  title={t('delete')}
-                  aria-label={t('delete')}
-                >
-                  <TrashIcon />
-                </button>
+            <SwipeRow id={tx.id} openId={openSwipeId} setOpenId={setOpenSwipeId} onDelete={() => handleDelete(tx.id)}>
+              <div className="tx-row-inner">
+                <div className="tx-left">
+                  <strong>{tx.note || (tx.type === 'masuk' ? t('income') : t('expense'))}</strong>
+                  <span>{tx.transaction_date}</span>
+                </div>
+                <div className="tx-right-col">
+                  <div className="tx-actions">
+                    <button type="button" className="icon-btn" onClick={() => startEdit(tx)} title={t('edit')} aria-label={t('edit')}>
+                      <EditIcon />
+                    </button>
+                    <button
+                      type="button"
+                      className="icon-btn danger"
+                      onClick={() => handleDelete(tx.id)}
+                      title={t('delete')}
+                      aria-label={t('delete')}
+                    >
+                      <TrashIcon />
+                    </button>
+                  </div>
+                  <span className="amount">
+                    {tx.type === 'masuk' ? '+' : '-'}Rp{Number(tx.amount).toLocaleString('id-ID')}
+                  </span>
+                </div>
               </div>
-            </div>
+            </SwipeRow>
           </li>
         );
       })}

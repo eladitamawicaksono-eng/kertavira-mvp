@@ -623,3 +623,282 @@ input:focus {
   background: var(--indigo);
   color: #fff;
 }
+
+/* --- Card entrance animation --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.summary, .tx-form, .donut-card, .insight-banner, .trend, .breakdown, .tx-list li {
+  animation: fadeInUp 0.35s ease both;
+}
+
+/* --- Form layout inside tx-form card --- */
+.tx-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tx-form-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.form-actions button[type='submit'] {
+  flex: 2;
+  padding: 13px;
+  border-radius: 12px;
+  background: var(--amber);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.form-actions button[type='submit'].save-success {
+  background: #059669;
+  color: #fff;
+  font-size: 18px;
+}
+
+.save-template-btn {
+  flex: 1;
+  font-size: 11.5px;
+  padding: 13px 8px;
+  text-align: center;
+  border-radius: 12px;
+}
+
+/* --- Quick templates --- */
+.quick-templates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.template-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: var(--lav);
+  border: 1.5px solid var(--line);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.template-chip.masuk { border-color: #a7f3d0; }
+.template-chip.keluar { border-color: #fecaca; }
+
+.template-chip .chip-amount {
+  color: var(--grey);
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.template-chip .chip-remove {
+  color: var(--grey);
+  font-weight: 800;
+  padding: 0 2px;
+}
+
+/* --- Donut chart --- */
+.donut-card {
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: var(--shadow-sm);
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.donut-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.donut-arc {
+  transition: stroke-dasharray 0.6s ease;
+}
+
+.donut-center {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-center strong {
+  font-size: 20px;
+  color: var(--ink);
+}
+
+.donut-center span {
+  font-size: 10.5px;
+  color: var(--grey);
+  font-weight: 600;
+}
+
+.donut-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+.dot.in { background: #059669; }
+.dot.out { background: #FEE2E2; border: 2px solid #dc2626; }
+
+/* --- Insight banner --- */
+.insight-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 16px;
+  border-radius: 14px;
+  background: #EEF2FF;
+  color: var(--indigo);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.insight-banner.warn { background: #FEF2F2; color: #dc2626; }
+.insight-banner.good { background: #ECFDF5; color: #059669; }
+
+.insight-icon {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* --- Date range picker (Riwayat) --- */
+.date-range-row {
+  display: flex;
+  gap: 10px;
+}
+
+.date-field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.date-field label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--grey);
+}
+
+.date-field input[type='date'] {
+  padding: 11px 10px;
+  border-radius: 10px;
+  border: 1.5px solid var(--line);
+  font-size: 13px;
+  background: var(--lav);
+  color: var(--ink);
+}
+
+/* --- Repositioned tx row (icons top-right, above amount) --- */
+.tx-list li {
+  padding: 0;
+  overflow: hidden;
+}
+
+.tx-list li.editing {
+  padding: 12px;
+}
+
+.swipe-row {
+  position: relative;
+}
+
+.swipe-delete-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 84px;
+  background: #dc2626;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swipe-content {
+  background: #fff;
+  padding: 13px 14px;
+  position: relative;
+  z-index: 1;
+  touch-action: pan-y;
+}
+
+.tx-row-inner {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tx-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.tx-left strong {
+  font-size: 13.5px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tx-left span {
+  font-size: 11.5px;
+  color: var(--grey);
+}
+
+.tx-right-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.tx-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.tx-right-col .amount {
+  font-size: 14px;
+  font-weight: 800;
+}
