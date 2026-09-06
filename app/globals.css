@@ -1041,8 +1041,11 @@ input:focus {
 .exit-toast {
   position: fixed;
   bottom: 76px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 16px;
+  right: 16px;
+  margin: 0 auto;
+  width: fit-content;
+  max-width: calc(100% - 32px);
   background: rgba(30, 27, 75, 0.92);
   color: #fff;
   padding: 10px 18px;
@@ -1050,6 +1053,7 @@ input:focus {
   font-size: 13px;
   font-weight: 600;
   z-index: 40;
+  text-align: center;
   animation: fadeInUp 0.2s ease both;
   white-space: nowrap;
 }
