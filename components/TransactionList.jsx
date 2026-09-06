@@ -43,10 +43,9 @@ function TypeIcon({ type }) {
   );
 }
 
-function SwipeRow({ id, openId, setOpenId, onDelete, onTap, children }) {
+function SwipeRow({ id, openId, setOpenId, onDelete, children }) {
   const [dragX, setDragX] = useState(null);
   const dragging = useRef(false);
-  const moved = useRef(false);
   const startX = useRef(0);
   const isOpen = openId === id;
 
@@ -56,14 +55,12 @@ function SwipeRow({ id, openId, setOpenId, onDelete, onTap, children }) {
 
   function handleDown(e) {
     dragging.current = true;
-    moved.current = false;
     startX.current = getX(e);
   }
 
   function handleMove(e) {
     if (!dragging.current) return;
     const delta = getX(e) - startX.current;
-    if (Math.abs(delta) > 4) moved.current = true;
     const base = isOpen ? -84 : 0;
     const next = Math.min(0, Math.max(-84, base + delta));
     setDragX(next);
@@ -73,12 +70,7 @@ function SwipeRow({ id, openId, setOpenId, onDelete, onTap, children }) {
     if (!dragging.current) return;
     dragging.current = false;
     const finalX = dragX === null ? (isOpen ? -84 : 0) : dragX;
-    if (finalX < -40) {
-      setOpenId(id);
-    } else {
-      setOpenId(null);
-      if (!moved.current) onTap();
-    }
+    setOpenId(finalX < -40 ? id : null);
     setDragX(null);
   }
 
@@ -218,13 +210,7 @@ export default function TransactionList({ transactions, categories, onChanged })
 
         return (
           <li key={tx.id} className={tx.type}>
-            <SwipeRow
-              id={tx.id}
-              openId={openSwipeId}
-              setOpenId={setOpenSwipeId}
-              onDelete={() => handleDelete(tx.id)}
-              onTap={() => startEdit(tx)}
-            >
+            <SwipeRow id={tx.id} openId={openSwipeId} setOpenId={setOpenSwipeId} onDelete={() => handleDelete(tx.id)}>
               <div className="kv-bank-row">
                 <TypeIcon type={tx.type} />
                 <div className="kv-bank-main">
