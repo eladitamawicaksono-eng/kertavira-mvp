@@ -102,7 +102,7 @@ export default function DashboardPage() {
           <h1>{t('appName')}</h1>
           {businessName && <span className="greeting">{businessName}</span>}
         </div>
-        <Link href="/settings" className="ghost">
+        <Link href="/settings" replace className="ghost">
           {t('navSettings')}
         </Link>
       </header>
@@ -142,7 +142,7 @@ export default function DashboardPage() {
       )}
 
       {transactions.length > 5 && (
-        <Link href="/riwayat" className="link-btn" style={{ marginTop: 12 }}>
+        <Link href="/riwayat" replace className="link-btn" style={{ marginTop: 12 }}>
           {t('viewAllHistory')}
         </Link>
       )}

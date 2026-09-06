@@ -51,7 +51,7 @@ export default function BottomNav() {
       {items.map((item) => {
         const active = pathname === item.href;
         return (
-          <Link key={item.href} href={item.href} className={active ? 'nav-item active' : 'nav-item'}>
+          <Link key={item.href} href={item.href} replace className={active ? 'nav-item active' : 'nav-item'}>
             <Icon name={item.icon} active={active} />
             <span>{item.label}</span>
           </Link>
