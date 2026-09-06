@@ -197,13 +197,13 @@ export default function TransactionList({ transactions, categories, onChanged })
         return (
           <li key={tx.id} className={tx.type}>
             <SwipeRow id={tx.id} openId={openSwipeId} setOpenId={setOpenSwipeId} onDelete={() => handleDelete(tx.id)}>
-              <div className="tx-row-inner">
-                <div className="tx-left">
+              <div className="kv-row">
+                <div className="kv-row-main">
                   <strong>{tx.note || (tx.type === 'masuk' ? t('income') : t('expense'))}</strong>
                   <span>{tx.transaction_date}</span>
                 </div>
-                <div className="tx-right-col">
-                  <div className="tx-actions">
+                <div className="kv-row-side">
+                  <div className="kv-row-icons">
                     <button type="button" className="icon-btn" onClick={() => startEdit(tx)} title={t('edit')} aria-label={t('edit')}>
                       <EditIcon />
                     </button>
@@ -217,7 +217,7 @@ export default function TransactionList({ transactions, categories, onChanged })
                       <TrashIcon />
                     </button>
                   </div>
-                  <span className="amount">
+                  <span className="kv-row-amount">
                     {tx.type === 'masuk' ? '+' : '-'}Rp{Number(tx.amount).toLocaleString('id-ID')}
                   </span>
                 </div>
