@@ -4,6 +4,15 @@ import { useState, useRef } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useLanguage } from './LanguageProvider';
 
+function EditIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+    </svg>
+  );
+}
+
 function TrashIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -222,6 +231,18 @@ export default function TransactionList({ transactions, categories, onChanged })
                   <strong>{tx.note || (tx.type === 'masuk' ? t('income') : t('expense'))}</strong>
                   <span>{tx.transaction_date}</span>
                 </div>
+                <button
+                  type="button"
+                  className="icon-btn kv-edit-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    startEdit(tx);
+                  }}
+                  title={t('edit')}
+                  aria-label={t('edit')}
+                >
+                  <EditIcon />
+                </button>
                 <span className="kv-bank-amount">
                   {tx.type === 'masuk' ? '+' : '-'}Rp{Number(tx.amount).toLocaleString('id-ID')}
                 </span>

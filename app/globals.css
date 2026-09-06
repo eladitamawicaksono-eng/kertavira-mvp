@@ -1008,3 +1008,18 @@ input:focus {
   color: var(--grey);
   margin: -4px 2px 10px;
 }
+
+/* --- Force li to behave as a normal block so children can fill full width --- */
+.tx-list li {
+  display: block !important;
+}
+
+.swipe-row,
+.swipe-content {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.kv-edit-btn {
+  flex-shrink: 0;
+}
