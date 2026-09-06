@@ -1023,3 +1023,16 @@ input:focus {
 .kv-edit-btn {
   flex-shrink: 0;
 }
+
+.kv-side-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.kv-icons-row {
+  display: flex;
+  gap: 4px;
+}

@@ -231,21 +231,37 @@ export default function TransactionList({ transactions, categories, onChanged })
                   <strong>{tx.note || (tx.type === 'masuk' ? t('income') : t('expense'))}</strong>
                   <span>{tx.transaction_date}</span>
                 </div>
-                <button
-                  type="button"
-                  className="icon-btn kv-edit-btn"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    startEdit(tx);
-                  }}
-                  title={t('edit')}
-                  aria-label={t('edit')}
-                >
-                  <EditIcon />
-                </button>
-                <span className="kv-bank-amount">
-                  {tx.type === 'masuk' ? '+' : '-'}Rp{Number(tx.amount).toLocaleString('id-ID')}
-                </span>
+                <div className="kv-side-stack">
+                  <div className="kv-icons-row">
+                    <button
+                      type="button"
+                      className="icon-btn"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        startEdit(tx);
+                      }}
+                      title={t('edit')}
+                      aria-label={t('edit')}
+                    >
+                      <EditIcon />
+                    </button>
+                    <button
+                      type="button"
+                      className="icon-btn danger"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(tx.id);
+                      }}
+                      title={t('delete')}
+                      aria-label={t('delete')}
+                    >
+                      <TrashIcon />
+                    </button>
+                  </div>
+                  <span className="kv-bank-amount">
+                    {tx.type === 'masuk' ? '+' : '-'}Rp{Number(tx.amount).toLocaleString('id-ID')}
+                  </span>
+                </div>
               </div>
             </SwipeRow>
           </li>
