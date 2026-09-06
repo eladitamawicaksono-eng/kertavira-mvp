@@ -145,6 +145,7 @@ export default function RiwayatPage() {
       </div>
 
       {groups.length === 0 && !loading && <p className="empty">{t('noTransactionsYet')}</p>}
+      {groups.length > 0 && <p className="list-hint">{t('tapToEditSwipeToDelete')}</p>}
 
       {groups.map((group) => (
         <div key={group.date} className="date-group">

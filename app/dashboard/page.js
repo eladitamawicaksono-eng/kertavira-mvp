@@ -129,6 +129,7 @@ export default function DashboardPage() {
           {t('exportImage')}
         </button>
       </div>
+      <p className="list-hint">{t('tapToEditSwipeToDelete')}</p>
 
       {loading ? (
         <p>{t('loading')}</p>

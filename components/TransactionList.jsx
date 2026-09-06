@@ -4,18 +4,9 @@ import { useState, useRef } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { useLanguage } from './LanguageProvider';
 
-function EditIcon() {
-  return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 20h9" />
-      <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
-    </svg>
-  );
-}
-
 function TrashIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="3 6 5 6 21 6" />
       <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" />
       <path d="M10 11v6" />
@@ -25,9 +16,28 @@ function TrashIcon() {
   );
 }
 
-function SwipeRow({ id, openId, setOpenId, onDelete, children }) {
+function TypeIcon({ type }) {
+  return (
+    <div className={`kv-avatar ${type}`}>
+      {type === 'masuk' ? (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="19" x2="12" y2="5" />
+          <polyline points="5 12 12 5 19 12" />
+        </svg>
+      ) : (
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <polyline points="19 12 12 19 5 12" />
+        </svg>
+      )}
+    </div>
+  );
+}
+
+function SwipeRow({ id, openId, setOpenId, onDelete, onTap, children }) {
   const [dragX, setDragX] = useState(null);
   const dragging = useRef(false);
+  const moved = useRef(false);
   const startX = useRef(0);
   const isOpen = openId === id;
 
@@ -37,12 +47,14 @@ function SwipeRow({ id, openId, setOpenId, onDelete, children }) {
 
   function handleDown(e) {
     dragging.current = true;
+    moved.current = false;
     startX.current = getX(e);
   }
 
   function handleMove(e) {
     if (!dragging.current) return;
     const delta = getX(e) - startX.current;
+    if (Math.abs(delta) > 4) moved.current = true;
     const base = isOpen ? -84 : 0;
     const next = Math.min(0, Math.max(-84, base + delta));
     setDragX(next);
@@ -56,6 +68,7 @@ function SwipeRow({ id, openId, setOpenId, onDelete, children }) {
       setOpenId(id);
     } else {
       setOpenId(null);
+      if (!moved.current) onTap();
     }
     setDragX(null);
   }
@@ -196,31 +209,22 @@ export default function TransactionList({ transactions, categories, onChanged })
 
         return (
           <li key={tx.id} className={tx.type}>
-            <SwipeRow id={tx.id} openId={openSwipeId} setOpenId={setOpenSwipeId} onDelete={() => handleDelete(tx.id)}>
-              <div className="kv-row">
-                <div className="kv-row-main">
+            <SwipeRow
+              id={tx.id}
+              openId={openSwipeId}
+              setOpenId={setOpenSwipeId}
+              onDelete={() => handleDelete(tx.id)}
+              onTap={() => startEdit(tx)}
+            >
+              <div className="kv-bank-row">
+                <TypeIcon type={tx.type} />
+                <div className="kv-bank-main">
                   <strong>{tx.note || (tx.type === 'masuk' ? t('income') : t('expense'))}</strong>
                   <span>{tx.transaction_date}</span>
                 </div>
-                <div className="kv-row-side">
-                  <div className="kv-row-icons">
-                    <button type="button" className="icon-btn" onClick={() => startEdit(tx)} title={t('edit')} aria-label={t('edit')}>
-                      <EditIcon />
-                    </button>
-                    <button
-                      type="button"
-                      className="icon-btn danger"
-                      onClick={() => handleDelete(tx.id)}
-                      title={t('delete')}
-                      aria-label={t('delete')}
-                    >
-                      <TrashIcon />
-                    </button>
-                  </div>
-                  <span className="kv-row-amount">
-                    {tx.type === 'masuk' ? '+' : '-'}Rp{Number(tx.amount).toLocaleString('id-ID')}
-                  </span>
-                </div>
+                <span className="kv-bank-amount">
+                  {tx.type === 'masuk' ? '+' : '-'}Rp{Number(tx.amount).toLocaleString('id-ID')}
+                </span>
               </div>
             </SwipeRow>
           </li>
